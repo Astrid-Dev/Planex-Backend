@@ -1,6 +1,7 @@
 const db = require("../models");
 const bcrypt = require('bcryptjs');
 const Enseignant = db.enseignant;
+const DomainesEnseignant = db.domaineEns;
 const PlanningCours = db.planningCoursTd;
 const Td = db.td;
 const Ue = db.ue;
@@ -18,10 +19,19 @@ exports.createMany = (req, res) => {
 
     let datas = [];
     let faculteId = null;
+    let domainesEns = [];
 
     bcrypt.hash(DEFAULT_PASSWORD, 10).then((hash) => {
         req.body.forEach((element) =>{
-            let {id, ...elt} = element;
+            let {id, idDomaines, ...elt} = element;
+            if(idDomaines)
+            {
+
+                domainesEns.push(idDomaines);
+            }
+            else{
+                domainesEns.push([]);
+            }
             datas.push({...elt, password: hash});
         });
     
@@ -41,21 +51,43 @@ exports.createMany = (req, res) => {
         {
             faculteId = datas[0].faculteId;
 
-            Enseignant.bulkCreate(datas)
-            .then(() =>{
-                return Enseignant.findAll({
-                    where : {
-                        faculteId: faculteId
-                }});
-            })
-            .then(enseignants => {
-                res.status(201).send(enseignants);
-            })
-            .catch(err => {
-                res.status(500).send({
-                    message: err.message || "Une erreur s'est produite lors de la création des enseignants !."
-                });
+            let promises = datas.map((item) =>{
+                return Enseignant.create(item);
             });
+
+            Promise.all(promises)
+                .then((enseignants) =>{
+                    let domainesToSend = [];
+                    enseignants.forEach((enseignant, index) =>{
+                        domainesEns[index].forEach((domaine) =>{
+                            domainesToSend.push({enseignantId: enseignant.id, domaineId: domaine});
+                        });
+                    });
+
+                    DomainesEnseignant.bulkCreate(domainesToSend)
+                        .then((result) =>{
+                            Enseignant.findAll({include: ["domaines"]})
+                                .then((result) =>{
+                                    res.status(201).send(result);
+                                })
+                                .catch(err3 => {
+                                    res.status(500).send({
+                                        message: err3.message || "Une erreur s'est produite lors de la création des enseignants !."
+                                    });
+                                });
+                        })
+                        .catch(err2 => {
+                            res.status(500).send({
+                                message: err2.message || "Une erreur s'est produite lors de la création des enseignants !."
+                            });
+                        });
+                })
+                .catch(err1 => {
+                    res.status(500).send({
+                        message: err1.message || "Une erreur s'est produite lors de la création des enseignants !."
+                    });
+                });
+
         }
         else
         {
@@ -84,7 +116,7 @@ exports.createMany = (req, res) => {
 exports.findOne = (req, res) =>{
     const id = req.params.id;
 
-    Enseignant.findByPk(id, {include: ["faculte"]})
+    Enseignant.findByPk(id, {include: ["faculte", "domaines"]})
         .then((data) =>{
             let temp = JSON.parse(JSON.stringify(data));
             let {faculte, ...enseignant} = temp;

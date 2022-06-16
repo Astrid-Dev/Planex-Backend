@@ -18,6 +18,10 @@ module.exports = (sequelize, Sequelize) => {
         },
         capacite_exam: {
             type: Sequelize.INTEGER,
+        },
+        etat: {
+            type: Sequelize.STRING,
+            defaultValue: null
         }
     });
 

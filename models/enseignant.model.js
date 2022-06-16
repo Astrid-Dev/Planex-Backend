@@ -3,6 +3,9 @@ module.exports = (sequelize, Sequelize) => {
         noms: {
             type: Sequelize.STRING,
         },
+        sexe: {
+            type: Sequelize.INTEGER,
+        },
         telephone: {
             type: Sequelize.STRING,
         },
@@ -16,6 +19,18 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.STRING
         },
         password: {
+            type: Sequelize.STRING,
+            defaultValue: null
+        },
+        grade: {
+            type: Sequelize.STRING,
+            defaultValue: null
+        },
+        etablissement: {
+            type: Sequelize.STRING,
+            defaultValue: null
+        },
+        position: {
             type: Sequelize.STRING,
             defaultValue: null
         }

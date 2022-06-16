@@ -16,6 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         semestre: {
             type: Sequelize.INTEGER,
         },
+        quota_horaire: {
+            type: Sequelize.INTEGER,
+            defaultValue: 0
+        }
     });
 
     return Ue;

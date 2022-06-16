@@ -38,7 +38,36 @@ db.seanceTd = require("./seance-td.model")(sequelize, Sequelize);
 db.td = require("./td.model")(sequelize, Sequelize);
 db.typeHoraire = require("./type-horaire.model")(sequelize, Sequelize);
 db.ue = require("./ue.model")(sequelize, Sequelize);
+db.domaine = require("./domaine.model")(sequelize, Sequelize);
+db.domaineEns = require("./domaines-enseignant.model")(sequelize, Sequelize);
 
+
+db.domaine.hasMany(db.ue, {as: "ues"});
+db.ue.belongsTo(db.domaine, {
+    as: "domaine",
+    foreignKey: "domaineId"
+});
+
+db.enseignant.hasMany(db.domaineEns, {as: "domaines"});
+db.domaineEns.belongsTo(db.enseignant, {
+    as: "enseignant",
+    foreignKey: "enseignantId"
+});
+
+db.faculte.hasMany(db.domaine, {as: "domaines"});
+db.domaine.belongsTo(db.faculte, {
+    as: "faculte",
+    foreignKey: "faculteId"
+});
+
+db.domaine.hasMany(db.domaineEns, {as: "domaines"});
+db.domaineEns.belongsTo(db.domaine, {
+    as: "domaine",
+    foreignKey: "domaineId"
+});
+
+db.faculte.hasMany(db.typeHoraire, {as: "plagesHoraires", foreignKey: "faculteId"});
+db.typeHoraire.belongsTo(db.faculte, {as: "faculte"});
 
 db.typeHoraire.hasMany(db.periode, {as: "periodes", foreignKey: "typeHoraireId"});
 db.periode.belongsTo(db.typeHoraire, {

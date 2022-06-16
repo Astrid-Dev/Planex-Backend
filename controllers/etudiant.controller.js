@@ -20,6 +20,7 @@ const DEFAULT_PASSWORD = "123456";
 exports.createMany = (req, res) => {
 
     let datas = [];
+    let classes = [];
 
     bcrypt.hash(DEFAULT_PASSWORD, 10).then((hash) => {
         req.body.forEach((element) =>{
