@@ -39,8 +39,38 @@ db.td = require("./td.model")(sequelize, Sequelize);
 db.typeHoraire = require("./type-horaire.model")(sequelize, Sequelize);
 db.ue = require("./ue.model")(sequelize, Sequelize);
 db.domaine = require("./domaine.model")(sequelize, Sequelize);
+db.departement = require("./departement.model")(sequelize, Sequelize);
 db.domaineEns = require("./domaines-enseignant.model")(sequelize, Sequelize);
+db.repartitionCours = require("./repartition-cours.model")(sequelize, Sequelize);
 
+
+db.ue.hasOne(db.repartitionCours, {as: "repartition", foreignKey: "ueId"});
+db.repartitionCours.belongsTo(db.ue, {
+    as: "ue",
+});
+
+db.enseignant.hasMany(db.repartitionCours, {as: "repartitions", foreignKey: "enseignant1Id"});
+db.repartitionCours.belongsTo(db.enseignant, {
+    as: "enseignant1"
+});
+
+db.repartitionCours.belongsTo(db.enseignant, {
+    foreignKey: "enseignant2Id",
+    as: "enseignant2"
+});
+db.repartitionCours.belongsTo(db.enseignant, {
+    foreignKey: "enseignant3Id",
+    as: "enseignant3"
+});
+db.repartitionCours.belongsTo(db.enseignant, {
+    foreignKey: "enseignant4Id",
+    as: "enseignant4"
+});
+
+db.anneeScolaire.hasMany(db.repartitionCours, {as: "repartitionsCours", foreignKey: "anneeScolaireId"});
+db.repartitionCours.belongsTo(db.anneeScolaire, {
+    as: "anneeScolaire"
+})
 
 db.domaine.hasMany(db.ue, {as: "ues"});
 db.ue.belongsTo(db.domaine, {
@@ -84,8 +114,14 @@ db.faculte.belongsTo(db.anneeScolaire, {
     as: "anneeScolaire"
 });
 
-db.faculte.hasMany(db.filiere, {as: "filieres"});
-db.filiere.belongsTo(db.faculte, {
+db.departement.hasMany(db.filiere, {as: "filieres"});
+db.filiere.belongsTo(db.departement, {
+    foreignKey: "departementId",
+    as: "departement"
+});
+
+db.faculte.hasMany(db.departement, {as: "departements"});
+db.departement.belongsTo(db.faculte, {
     foreignKey: "faculteId",
     as: "faculte"
 });

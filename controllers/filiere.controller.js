@@ -4,7 +4,7 @@ const Filiere = db.filiere;
 exports.createMany = (req, res) => {
 
     let datas = [];
-    let faculteId = null;
+    let departementId = null;
 
     req.body.forEach((element) =>{
         datas.push(element);
@@ -19,7 +19,7 @@ exports.createMany = (req, res) => {
 
     for(let i = 0; i < datas.length; i++)
     {
-        if(!datas[i].code && !datas[i].faculteId)
+        if(!datas[i].code && !datas[i].departementId)
         {
             allElementsAreValid = false;
             nonValidFiliereCode = datas[i]?.code;
@@ -28,13 +28,13 @@ exports.createMany = (req, res) => {
     }
     if(allElementsAreValid && datas.length > 0)
     {
-        faculteId = datas[0].faculteId;
+        departementId = datas[0].departementId;
 
         Filiere.bulkCreate(datas)
         .then(() =>{
             return Filiere.findAll({
                 where : {
-                    faculteId: faculteId
+                    departementId: departementId
             }});
         })
         .then(filieres => {
