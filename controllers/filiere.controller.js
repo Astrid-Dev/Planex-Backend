@@ -1,13 +1,15 @@
 const db = require("../models");
 const Filiere = db.filiere;
+const Op = db.Sequelize.Op;
 
 exports.createMany = (req, res) => {
 
     let datas = [];
-    let departementId = null;
+    let departements = [];
 
     req.body.forEach((element) =>{
         datas.push(element);
+        departements.push(element?.departementId);
     });
 
     datas.forEach(element => {
@@ -28,13 +30,14 @@ exports.createMany = (req, res) => {
     }
     if(allElementsAreValid && datas.length > 0)
     {
-        departementId = datas[0].departementId;
 
         Filiere.bulkCreate(datas)
         .then(() =>{
             return Filiere.findAll({
                 where : {
-                    departementId: departementId
+                    departementId:{
+                        [Op.in]: departements
+                    }
             }});
         })
         .then(filieres => {
