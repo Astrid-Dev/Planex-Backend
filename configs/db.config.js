@@ -1,8 +1,8 @@
 module.exports = {
-    HOST: "localhost",
-    USER: "root",
-    PASSWORD: "",
-    DB: "planex",
+    HOST: "sql.freedb.tech",
+    USER: "freedb_astrid-dev",
+    PASSWORD: "#Rz5eG68Mr!uVjf",
+    DB: "freedb_planex",
     dialect: "mysql",
     pool: {
         max: 5,
