@@ -11,6 +11,7 @@ const AnneeScolaire = db.anneeScolaire;
 const Domaine = db.domaine;
 const Filiere = db.filiere;
 const Departement = db.departement;
+const Surveillant = db.surveillant;
 const RepartitionCours = db.repartitionCours;
 const Op = db.Sequelize.Op;
 
@@ -52,7 +53,7 @@ exports.findOneWithAllSubsDatas = (req, res) => {
     let result = {};
     let donnees_fichiers = {};
 
-    Faculte.findByPk(id, {include: ["departements", "niveaux", "enseignants"]})
+    Faculte.findByPk(id, {include: ["departements", "niveaux", "enseignants", "surveillants"]})
         .then(faculte =>{
             if(faculte){
                 let liste_departements = faculte.departements.map(elt => elt.id);
@@ -67,11 +68,12 @@ exports.findOneWithAllSubsDatas = (req, res) => {
                             niveaux: faculte.niveaux.length,
                             enseignants: faculte.enseignants.length,
                             departements: faculte.departements.length,
+                            surveillants: faculte.surveillants.length
                         }
 
                         faculte = JSON.parse(JSON.stringify(faculte));
 
-                        let {enseignants, departements, niveaux, ...new_faculte} = faculte;
+                        let {enseignants, surveillants, departements, niveaux, ...new_faculte} = faculte;
 
                         faculte = new_faculte;
 
@@ -82,6 +84,7 @@ exports.findOneWithAllSubsDatas = (req, res) => {
                             niveaux: niveaux,
                             faculte: faculte,
                             departements: departements,
+                            surveillants: surveillants
                         }
 
                         let promises = [1, 2, 3, 4, 5, 6, 7].map((elt, index) =>{

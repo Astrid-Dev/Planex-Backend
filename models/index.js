@@ -22,6 +22,7 @@ db.sequelize = sequelize;
 db.anneeScolaire = require("./annee-scolaire.model")(sequelize, Sequelize);
 db.classe = require("./classe.model")(sequelize, Sequelize);
 db.enseignant = require("./enseignant.model")(sequelize, Sequelize);
+db.surveillant = require("./surveillant.model")(sequelize, Sequelize);
 db.etutiantGroupeTd = require("./etudiant-groupe-td.model")(sequelize, Sequelize);
 db.etudiant = require("./etudiant.model")(sequelize, Sequelize);
 db.faculte = require("./faculte.model")(sequelize, Sequelize);
@@ -86,6 +87,12 @@ db.domaineEns.belongsTo(db.enseignant, {
 
 db.faculte.hasMany(db.domaine, {as: "domaines"});
 db.domaine.belongsTo(db.faculte, {
+    as: "faculte",
+    foreignKey: "faculteId"
+});
+
+db.faculte.hasMany(db.surveillant, {as: "surveillants"});
+db.surveillant.belongsTo(db.faculte, {
     as: "faculte",
     foreignKey: "faculteId"
 });
